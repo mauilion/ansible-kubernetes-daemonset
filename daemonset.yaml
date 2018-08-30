@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    name: ansible
+  name: ansible
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: ansible
+  template:
+    metadata:
+      labels:
+        name: ansible
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/ansible-playbook
+        - -c
+        - chroot
+        - -i
+        - /etc/ansible/hosts
+        - /etc/ansible/site.yml
+        image: quay.io/mauilion/ansible:4
+        imagePullPolicy: IfNotPresent
+        name: ansible
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /media/root
+          name: root
+        - mountPath: /etc/ansible
+          name: site
+        - mountPath: /tmp
+          name: tmp
+      dnsPolicy: ClusterFirst
+      hostIPC: true
+      hostNetwork: true
+      hostPID: true
+      tolerations:
+        - operator: "Exists"
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /
+          type: Directory
+        name: root
+      - emptyDir: {}
+        name: tmp
+      - name: site
+        projected:
+          defaultMode: 420
+          sources:
+          - configMap:
+              items:
+              - key: site.yml
+                path: site.yml
+              name: ansible
+          - configMap:
+              items:
+              - key: ansible.cfg
+                path: ansible.cfg
+              name: ansible
+          - configMap:
+              items:
+              - key: hosts
+                path: hosts
+              name: ansible
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate

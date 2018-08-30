@@ -1,1 +1,1 @@
-docker build -t quay.io/philips/ansible:4 .
+docker build -t quay.io/mauilion/ansible:4 .

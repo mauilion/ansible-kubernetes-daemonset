@@ -5,7 +5,7 @@ kubectl delete cm ansible
 sleep 2
 
 kubectl create configmap ansible --from-file=site.yml --from-file=ansible.cfg --from-file=hosts
-kubectl create -f pod.yml
+kubectl create -f daemonset.yml
 
 sleep 4
 
