@@ -16,12 +16,10 @@ spec:
     spec:
       containers:
       - command:
-        - /usr/local/bin/ansible-playbook
-        - -c
-        - chroot
-        - -i
-        - /etc/ansible/hosts
-        - /etc/ansible/site.yml
+        - "/bin/bash"
+        args:
+        - "-c"
+        - "/usr/local/bin/ansible-playbook -c chroot -i /etc/ansible/hosts /etc/ansible/site.yml && echo \"=== $(hostname) COMPLETED SUCCESSFULLY ===\" ; sleep 8000"
         image: quay.io/mauilion/ansible:4
         imagePullPolicy: IfNotPresent
         name: ansible
