@@ -2,20 +2,30 @@
 - hosts: coreos
   gather_facts: False
   roles:
-    - defunctzombie.coreos-bootstrap
+    - instrumentisto.coreos-bootstrap
 
+  become_method: sudo
+  become: yes
   tasks:
+    - name: facts
+      setup:
+    - name: gather facts
+      debug:
+        var: hostvars[inventory_hostname]
+        verbosity: 4
+      delegate_to: localhost
+
     - name: mask locksmithd
       systemd:
-        name=locksmithd.service
-        enabled=no
-        masked=yes
-        state=stopped
+        name: locksmithd.service
+        enabled: no
+        masked: yes
+        state: stopped
 
     - name: ensure update-engine.service
       systemd:
-        name=update-engine.service
-        enabled=yes
-        masked=no
-        state=started
+        name: update-engine.service
+        enabled: yes
+        masked: no
+        state: started
 

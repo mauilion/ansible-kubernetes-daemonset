@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
       - command:
-        - "/bin/bash"
+        - "/bin/sh"
         args:
         - "-c"
-        - "/usr/local/bin/ansible-playbook -c chroot -i /etc/ansible/hosts /etc/ansible/site.yml && echo \"=== $(hostname) COMPLETED SUCCESSFULLY ===\" ; sleep 8000"
-        image: quay.io/mauilion/ansible:4
+        - "/usr/bin/ansible-playbook -c chroot -i /etc/ansible/hosts /etc/ansible/site.yml && echo \"=== $(hostname) COMPLETED SUCCESSFULLY ===\" ; sleep 8000"
+        image: quay.io/mauilion/ansible:fix_idempotency
         imagePullPolicy: IfNotPresent
         name: ansible
         securityContext:

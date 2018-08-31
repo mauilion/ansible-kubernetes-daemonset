@@ -1,4 +1,6 @@
-FROM debian:stretch
-
-RUN apt-get update && apt-get install -y python2.7 python-pip bash && pip install ansible && ansible-galaxy install defunctzombie.coreos-bootstrap
-ADD site.yml /srv/ansible/site.yml
+FROM williamyeh/ansible:alpine3-onbuild
+ADD requirements.yaml /srv/ansible/requirements.yaml
+ENV REQUIREMENTS /srv/ansible/requirements.yaml
+ENV PLAYBOOK /srv/ansible/requirements.yaml
+RUN apk add git && ansible-galaxy install -r ${REQUIREMENTS}
+CMD ["ansible-playbook", "--version"]
